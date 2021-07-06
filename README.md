@@ -1,5 +1,11 @@
 # fitness_dojo
 This is for final Coding Dojo project. Fitness app.
+App description:
+Users can see many fitness events by groups will occur and can send a request to join if group owner accepted
+Users can create a group and event
+Members of group can talk about the fitness event (to comfirm the attendance, etc)
+
+App includes,
 (1) Log and Reg with validations
 (1) User can create his fitness group and fitness event
 (1) User can read and view, fitness groups and events 
