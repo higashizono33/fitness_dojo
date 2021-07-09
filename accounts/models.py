@@ -5,6 +5,17 @@ from django.utils import timezone
 from django.core import validators
 import os
 from uuid import uuid4
+# from ..app.models import Sport
+
+#moved from app
+class Sport(models.Model):
+    # user = models.ManyToManyField(User, related_name='favorite_sports')
+    name = models.CharField(max_length=100, null=False, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
@@ -47,6 +58,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to=path_and_rename, blank=True)
     birthday = models.DateField('birthday', null=True)
     benchpress = models.IntegerField('benchpress', null=True)
+    sport = models.ManyToManyField(Sport, related_name='users')
     goal = models.TextField('goal', max_length=500, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

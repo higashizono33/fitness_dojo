@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+# can login with the either of email or username
 class EmailOrUsernameModelBackend(object):
     """
     This is a ModelBacked that allows authentication with either a username or an email address.

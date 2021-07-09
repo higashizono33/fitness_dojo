@@ -4,16 +4,14 @@ from django.core import validators
 
 User = get_user_model()
 
-# Create your models here.
+# class Sport(models.Model):
+#     user = models.ManyToManyField(User, related_name='favorite_sports')
+#     name = models.CharField(max_length=100, null=False, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-class Sport(models.Model):
-    user = models.ManyToManyField(User, related_name='favorite_sports')
-    name = models.CharField(max_length=100, null=False, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 class Group(models.Model):
     LEVEL_CHOICES = [
@@ -58,7 +56,8 @@ class Event(models.Model):
     group = models.ForeignKey(Group, related_name='events', on_delete=models.CASCADE)
     title = models.CharField(max_length=100, null=False, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
     location = models.CharField(max_length=100, null=False)
-    starttime = models.DateTimeField()
+    date = models.DateField(null=False)
+    starttime = models.TimeField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
