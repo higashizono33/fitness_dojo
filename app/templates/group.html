@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Group Detail{% endblock %}
+{% block content %}
+{% include 'navbar.html' %}
+<section class="mt-7 py-0">
+    <!-- <div class="bg-holder w-50 bg-right d-none d-lg-block" style="background-image:url(assets/img/gallery/hero-section-1.png);"></div> -->
+    <!--/.bg-holder-->
+    <div class="container pt-5">
+        <h1 class="display-5 text-1000 fw-normal d-inline">{{group.name}}</h1>
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="{% url 'activity' group.id %}">See activities</a></h1>
+        <div class="row">
+            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+                <div class="pt-5 text-center">
+                    <p>Map Here</p>
+                    <p>{{group.gym}}</p>
+                </div>
+            </div>
+            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+                <form action="" method="POST" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3 row">
+                        <label for="staticLimit" class="col-sm-3 col-form-label">Member Limit:</label>
+                        <div class="col-sm-2">
+                            {% if user == group.creator %}
+                            {{form.limit|as_crispy_field}}
+                            <!-- <input type="number" class="form-control" id="inputLimit" value="{{group.limit}}"> -->
+                            {% else %}
+                            <p class="pt-2">{{group.limit}}</p>
+                            {% endif %}
+                            <!-- <input type="text" readonly class="form-control-plaintext" id="staticLimit" value="email@example.com"> -->
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="staticLevel" class="col-sm-3 col-form-label">Fitness Level:</label>
+                        <div class="col-sm-9">
+                            {% if user == group.creator %}
+                            {{form.level|as_crispy_field}}
+                            <!-- <input type="text" class="form-control" id="inputLevel" value="{{group.get_level_display}}"> -->
+                            {% else %}
+                            <p class="pt-2">{{group.get_level_display}}</p>
+                            {% endif %}
+                            <!-- <input type="text" readonly class="form-control-plaintext" id="staticLevel" value="email@example.com"> -->
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="staticDescription" class="col-sm-3 col-form-label">Description:</label>
+                        <div class="col-sm-9">
+                            {% if user == group.creator %}
+                            {{form.description|as_crispy_field}}
+                            <!-- <textarea name="" id="" cols="30" rows="3" class="form-control">{{group.description}}</textarea> -->
+                            {% else %}
+                            <p class="pt-2">{{group.description}}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 col-form-label">Leader:</label>
+                        <div class="col-sm-9 pt-2">
+                            <a href="{% url 'profile' group.creator.id %}"><p>{{group.creator.username}}</p></a>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label class="col-sm-3 col-form-label">Members:</label>
+                        <div class="col-sm-9 pt-2">
+                            {% for member in group.member.all %}
+                            <a href="{% url 'profile' member.id %}" class="me-3">{{member.username}}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if user == group.creator %}
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-warning px-5 me-3">Edit</button>
+                        <button class="btn btn-danger px-5">Delete</button>
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        <!-- end of row -->
+        </div>
+    </div>
+</section>
+{% endblock %}

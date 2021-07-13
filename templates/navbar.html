@@ -1,52 +1,45 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Fitness Dojo</a>
+            <a class="navbar-brand" href="{% url 'home' %}">Fitness Dojo</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 {% if user.is_authenticated %}
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    {% if 'home' in request.path %}
+                    <ul class="navbar-nav mb-2 mb-lg-0">
                         <li class="nav-item ms-3">
-                            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">home</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
                         </li>
                         <li class="nav-item ms-3">
-                            <a class="nav-link" aria-current="page" href="{% url 'edit_profile' request.user.id %}">Profile</a>
-                        </li>
-                    {% elif 'profile' in request.path %}
-                        <li class="nav-item ms-3">
-                            <a class="nav-link" aria-current="page" href="{% url 'home' %}">home</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'profile' request.user.id %}">Profile</a>
                         </li>
                         <li class="nav-item ms-3">
-                            <a class="nav-link active" aria-current="page" href="{% url 'edit_profile' request.user.id %}">Profile</a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item ms-3">
-                            <a class="nav-link" aria-current="page" href="{% url 'home' %}">home</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'create_group' %}">Group</a>
                         </li>
                         <li class="nav-item ms-3">
-                            <a class="nav-link" aria-current="page" href="#">Profile</a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'request_confirm' %}">Request</a>
                         </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-                    </li>
-                </ul>
+                    </ul>
+                    <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                        <li class="nav-item text-white align-self-center">
+                            Welcome, {{user.username}}!!
+                        </li>
+                        <li class="nav-item ms-3">
+                            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                        </li>
+                    </ul>
                 {% else %}
-                <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item ms-3">
-                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
-                    </li>
-                </ul>
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item ms-3">
+                            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                        </li>
+                    </ul>
                 {% endif %}
             </div>
         </div>

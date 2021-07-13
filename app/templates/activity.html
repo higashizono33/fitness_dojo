@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Group Detail{% endblock %}
+{% block content %}
+{% include 'navbar.html' %}
+<section class="mt-7 py-0">
+    <!-- <div class="bg-holder w-50 bg-right d-none d-lg-block" style="background-image:url(assets/img/gallery/hero-section-1.png);"></div> -->
+    <!--/.bg-holder-->
+    <div class="container pt-5">
+        <h1 class="display-5 text-1000 fw-normal d-inline">{{group.name}} - Activities</h1>
+        {% if requested_before %}
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3 text-danger">*you sent request</h1>
+        {% elif group.can_request %}
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="{% url 'request' group.id %}">send request</a></h1>
+        {% else %}
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3 text-danger">*this group is full</h1>
+        {% endif %}
+        <div class="row">
+            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Event</th>
+                            <th scope="col">Group</th>
+                            <th scope="col">Creator</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <th scope="row"><a href="">{{event.title}}</a></th>
+                            <td><a href="{% url 'group' event.group.id %}">{{event.group}}</a></td>
+                            <td>{{event.group.creator.username}}</td>
+                            <td>{{event.location}}</td>
+                            <td>{{event.date}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+                <form action="" method="POST" novalidate>
+                    {% csrf_token %}
+                    <h1>Chat Here</h1>
+                </form>
+            </div>
+        <!-- end of row -->
+        </div>
+    </div>
+</section>
+{% endblock %}

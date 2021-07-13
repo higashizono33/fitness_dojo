@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock %}
+{% block extra_header %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+{% block content %}
+{% include 'navbar.html' %}
+{% if not not_responded %}
+<div class="text-center mt-5"><h3>There is no request you have..</h3></div>
+{% else %}
+<div class="container mt-5">
+    <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="account-settings">
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
+                            </div>
+                            <h5 class="user-name">{{current_req.who_requested.username}}</h5>
+                            <h6 class="user-email">{{current_req.who_requested.email}}</h6>
+                        </div>
+                        <div class="about">
+                            <h5>About</h5>
+                            <p>{{current_req.who_requested.goal}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="row gutters">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h6 class="mb-3 text-primary">Information</h6>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h6 class="mb-3 text-primary">Message</h6>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="row mb-3">
+                                <label for="birthday" class="col-6">Birthday:</label>
+                                <span class="col-6">{{current_req.who_requested.birthday}}</span>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="benchpress" class="col-6">Max of benchpress (lbs):</label>
+                                <span class="col-6">{{current_req.who_requested.benchpress}} lbs</span>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="sport" class="col-6">Favorite Sport:</label>
+                                <ul class="col-6">
+                                    {% for sport in current_req.who_requested.sport.all %}
+                                    <li>{{sport.name}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="row mb-3 border-bottom">
+                                <label for="own_groups">He said,</label>
+                                <p class="ms-5">message here</p>
+                            </div>
+                            <div class="row mb-3">
+                                <h3 class="ms-5">{{current_req.who_requested.username}} wants to be in {{current_req.group.name}}</h3>
+                                <h3 class="ms-5">Do you accept his request?</h3>
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'accept_request' current_req.id %}" class="me-3"><button class="btn btn-secondary">Yes</button></a>
+                                    <a href="{% url 'reject_request' current_req.id %}" class="me-3"><button class="btn btn-secondary">No</button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

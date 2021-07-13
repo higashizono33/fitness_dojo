@@ -32,9 +32,16 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
+    def can_request(self):
+        if self.member.count() < self.limit:
+            return True
+        else:
+            return False
+
 class Request(models.Model):
     who_requested = models.ForeignKey(User, related_name='requests', on_delete=models.CASCADE)
     group = models.ForeignKey(Group, related_name='requests', on_delete=models.CASCADE)
+    is_responded = models.BooleanField(default=False)
     is_accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -45,6 +52,7 @@ class Request(models.Model):
 class Invitation(models.Model):
     group = models.ForeignKey(Group, related_name='invitations', on_delete=models.CASCADE)
     invited_who = models.ForeignKey(User, related_name='invitations', on_delete=models.CASCADE)
+    is_responded = models.BooleanField(default=False)
     is_accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

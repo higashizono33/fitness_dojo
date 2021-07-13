@@ -4,7 +4,7 @@
 {% block content %}
 {% include 'navbar.html' %}
 <section class="mt-7 py-0">
-    <div class="bg-holder w-50 bg-right d-none d-lg-block" style="background-image:url(assets/img/gallery/hero-section-1.png);"></div>
+    <!-- <div class="bg-holder w-50 bg-right d-none d-lg-block" style="background-image:url(assets/img/gallery/hero-section-1.png);"></div> -->
     <!--/.bg-holder-->
     <div class="container">
         <div class="row">
@@ -141,8 +141,8 @@
                         {% for event in events %}
                         <tr>
                             <th scope="row">{{event.title}}</th>
-                            <td><a href="">{{event.group}}</a></td>
-                            <td>{{event.group.creator.username}}</td>
+                            <td><a href="{% url 'group' event.group.id %}">{{event.group}}</a></td>
+                            <td><a href="{% url 'profile' event.group.creator.id %}">{{event.group.creator.username}}</a></td>
                             <td>{{event.location}}</td>
                             <td>{{event.date}}</td>
                             <td>{{event.starttime}}</td>

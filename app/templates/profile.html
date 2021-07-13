@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock %}
+{% block extra_header %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container mt-5">
+    <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="account-settings">
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
+                            </div>
+                            <h5 class="user-name">{{profile.username}}</h5>
+                            <h6 class="user-email">{{profile.email}}</h6>
+                        </div>
+                        <div class="about">
+                            <h5>About</h5>
+                            <p>{{profile.goal}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    {% if user == profile %}
+                    <div class="row gutters border-bottom">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <h6 class="mb-2 text-primary">Additional</h6>
+                        </div>
+                        <form action="{% url 'profile' profile.id %}" method="POST" novalidate class="row">
+                            {% csrf_token %}
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="photo">Photo</label>
+                                    {{form.photo|as_crispy_field}}
+                                    <!-- <input type="name" class="form-control" id="Street" placeholder="Enter Street"> -->
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="birthday">Birthday</label>
+                                    {{form.birthday|as_crispy_field}}
+                                    <!-- <input type="name" class="form-control" id="ciTy" placeholder="Enter City"> -->
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="benchpress">Max of benchpress (lbs)</label>
+                                    {{form.benchpress|as_crispy_field}}
+                                    <!-- <input type="text" class="form-control" id="sTate" placeholder="Enter State"> -->
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="sport">Favorite Sports</label>
+                                    {{form.sport|as_crispy_field}}
+                                    <!-- <input type="text" class="form-control" id="zIp" placeholder="Zip Code"> -->
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="goal">My Goal</label>
+                                    {{form.goal|as_crispy_field}}
+                                    <!-- <input type="text" class="form-control" id="zIp" placeholder="Zip Code"> -->
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 align-self-end">
+                                <button id="submit" name="submit" class="btn btn-primary mb-4">Update</button>
+                            </div>
+                            <!-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="userName">Username</label>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                </div>
+                                <button id="submit" name="submit" class="btn btn-primary">Update</button>
+                            </div> -->
+                        </form>
+                    </div>
+                    <div class="row gutters mt-3">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <h6 class="mb-2 text-primary">Reset Password</h6>
+                        </div>
+                        <form action="{% url 'reset_password' profile.id %}" method="POST" class="row" novalidate>
+                            {% csrf_token %}
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <!-- <label for="password">New Password</label> -->
+                                    {{p_form.new_password1|as_crispy_field}}
+                                    <!-- <input type="password" class="form-control" id="password" placeholder="Enter new password"> -->
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <!-- <label for="password">Confirmed PW</label> -->
+                                    {{p_form.new_password2|as_crispy_field}}
+                                    <!-- <input type="password" class="form-control" id="confirmed_pw" placeholder="Repeat new password"> -->
+                                </div>
+                                <button id="submit" name="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="row gutters">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h6 class="mb-3 text-primary">Information</h6>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h6 class="mb-3 text-primary">Group</h6>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="row mb-3">
+                                <label for="birthday" class="col-6">Birthday:</label>
+                                {% if profile.birthday %}
+                                <span class="col-6">{{profile.birthday}}</span>
+                                {% endif %}
+                            </div>
+                            <div class="row mb-3">
+                                <label for="benchpress" class="col-6">Max of benchpress (lbs):</label>
+                                {% if profile.benchpress %}
+                                <span class="col-6">{{profile.benchpress}} lbs</span>
+                                {% endif %}
+                            </div>
+                            <div class="row mb-3">
+                                <label for="sport" class="col-6">Favorite Sport:</label>
+                                <ul class="col-6">
+                                    {% for sport in profile.sport.all %}
+                                    <li>{{sport.name}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="row mb-3">
+                                <label for="own_groups">Own Group:</label>
+                                {% for group in profile.own_groups.all %}
+                                <p class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></p>
+                                {% endfor %}
+                            </div>
+                            <div class="row mb-3">
+                                <label for="join_groups">Join Group:</label>
+                                {% for group in profile.join_groups.all %}
+                                <span class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                        <!-- <div class="row gutters">
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <h6 class="mt-3 mb-2 text-primary">Additional</h6>
+                        </div>
+                        <form action="" method="POST" novalidate class="row">
+                            {% csrf_token %}
+                            
+                        </form>
+                    </div> -->
+                    <!-- <div class="row gutters">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div class="text-right">
+                                <button type="button" id="submit" name="submit" class="btn btn-secondary">Cancel</button>
+                                <button type="button" id="submit" name="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
