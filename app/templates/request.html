@@ -61,12 +61,12 @@
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="row mb-3 border-bottom">
-                                <label for="own_groups">He said,</label>
-                                <p class="ms-5">message here</p>
+                                <label for="own_groups">{{current_req.who_requested.username}} said,</label>
+                                <p class="">{{current_req.message}}</p>
                             </div>
                             <div class="row mb-3">
-                                <h3 class="ms-5">{{current_req.who_requested.username}} wants to be in {{current_req.group.name}}</h3>
-                                <h3 class="ms-5">Do you accept his request?</h3>
+                                <h3 class="ms-4">{{current_req.who_requested.username}} wants to be in {{current_req.group.name}}</h3>
+                                <h3 class="ms-4">Do you accept his request?</h3>
                                 <div class="text-center mt-3">
                                     <a href="{% url 'accept_request' current_req.id %}" class="me-3"><button class="btn btn-secondary">Yes</button></a>
                                     <a href="{% url 'reject_request' current_req.id %}" class="me-3"><button class="btn btn-secondary">No</button></a>

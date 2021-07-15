@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
-{% block title %}Group Detail{% endblock %}
+{% block title %}Group Management{% endblock %}
+{% block extra_header %}
+<link rel="stylesheet" href="{% static 'css/group.css' %}">
+{% endblock %}
 {% block content %}
 {% include 'navbar.html' %}
 <section class="mt-7 py-0">
@@ -8,7 +12,37 @@
     <!--/.bg-holder-->
     <div class="container pt-5">
         <h1 class="display-5 text-1000 fw-normal d-inline">{{group.name}}</h1>
-        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="{% url 'activity' group.id %}">See activities</a></h1>
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="{% url 'activity' group.id %}">see activities</a></h1>
+        {% if user == group.creator %}
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="" data-bs-toggle="modal" data-bs-target="#invitationModal">send invitation</a></h1>
+        {% endif %}
+        <!-- Modal -->
+        <div class="modal fade" id="invitationModal" tabindex="-1" aria-labelledby="invitationModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="invitationModalLabel">Request to join {{group.name}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{% url 'invite' group.id %}" method="POST">
+                    {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="message">select user here</label>
+                            <select name="user" id="" class="form-control">
+                                <option value=""></option>
+                                {% for non_member in non_members %}
+                                    <option value="{{non_member.id}}">{{non_member.username}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button class="btn btn-primary">Invite</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
                 <div class="pt-5 text-center">

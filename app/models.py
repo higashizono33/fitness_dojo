@@ -4,15 +4,6 @@ from django.core import validators
 
 User = get_user_model()
 
-# class Sport(models.Model):
-#     user = models.ManyToManyField(User, related_name='favorite_sports')
-#     name = models.CharField(max_length=100, null=False, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     def __str__(self):
-#         return self.name
-
 class Group(models.Model):
     LEVEL_CHOICES = [
         ('B', 'beginner'),
@@ -22,7 +13,8 @@ class Group(models.Model):
     creator = models.ForeignKey(User, related_name='own_groups', on_delete=models.CASCADE)
     member = models.ManyToManyField(User, related_name='join_groups')
     name = models.CharField(max_length=100, null=False, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
-    limit = models.IntegerField()
+    #limit of members
+    limit = models.IntegerField(validators=[validators.MinValueValidator(1, 'Please enter more than 1')])
     gym = models.CharField(max_length=100)
     description = models.TextField(null=True)
     level = models.CharField(max_length=1, choices=LEVEL_CHOICES)
@@ -41,6 +33,7 @@ class Group(models.Model):
 class Request(models.Model):
     who_requested = models.ForeignKey(User, related_name='requests', on_delete=models.CASCADE)
     group = models.ForeignKey(Group, related_name='requests', on_delete=models.CASCADE)
+    message = models.TextField(null=True)
     is_responded = models.BooleanField(default=False)
     is_accepted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

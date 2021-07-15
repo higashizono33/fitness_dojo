@@ -8,124 +8,65 @@
     <!--/.bg-holder-->
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
-                <h1 class="display-3 text-1000 fw-normal">Let’s make a tour</h1>
-                <h1 class="display-3 text-primary fw-bold">Discover the beauty</h1>
-                <div class="pt-5">
-                    <nav>
-                        <div class="nav nav-tabs voyage-tabs" id="nav-tab" role="tablist"><button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true"><i class="fas fa-map-marker-alt"></i></button><button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"> <i class="fas fa-plane"></i></button><button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false"> <i class="fas fa-hotel"></i></button></div>
-                        <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                <form class="row g-4 mt-3 ms-4" method="POST" novalidate>
-                                    {% csrf_token %}
-                                    <div class="col-sm-12 col-md-12 col-xl-11">
-                                        <div class="input-group-icon">
-                                            <i class="fas fa-calendar"></i>
-                                            <!-- <input class="form-control input-box" id="inputEvent" type="text" placeholder="Your Event" name="title"/> -->
-                                            {{form.title|as_crispy_field}}
-                                            <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
-                                        </div>
+            <div class="col-lg-5">
+                <h1 class="display-6 pt-5 text-primary fw-bold">Let's make a day better!!</h1>
+            </div>
+            <div class="col-lg-5">
+                <h1 class="display-6 pt-5 text-1000 fw-normal">Event Bulletin Board</h1>
+            </div>
+            <div class="col-lg-5 py-5 py-xl-5 py-xxl-5">
+                <div>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <form class="row g-4 ms-4" method="POST" novalidate>
+                                {% csrf_token %}
+                                <div class="col-sm-12 col-md-12 col-xl-11">
+                                    <div class="input-group-icon">
+                                        <!-- <i class="fas fa-calendar"></i> -->
+                                        <!-- <input class="form-control input-box" id="inputEvent" type="text" placeholder="Your Event" name="title"/> -->
+                                        {{form.title|as_crispy_field}}
+                                        <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-xl-11">
-                                        <div class="input-group-icon"><i class="fas fa-user"></i>
-                                            <!-- <input class="form-control input-box" id="inputGroup" type="text" placeholder="Your Group" name="group"/> -->
-                                            {{form.group|as_crispy_field}}
-                                            <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-xl-11">
-                                        <div class="input-group-icon">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            <!-- <input class="form-control input-box" id="inputLocation" type="text" placeholder="Your Location" name="location"/> -->
-                                            {{form.location|as_crispy_field}}
-                                            <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-xl-5">
-                                        <div class="input-group-icon">
-                                            <i class="fas fa-calendar"></i>
-                                            <!-- <input class="form-control input-box" id="inputDate" type="date" placeholder="Date" name="date"/> -->
-                                            {{form.date|as_crispy_field}}
-                                            <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-xl-5">
-                                        <div class="input-group-icon">
-                                            <i class="fas fa-calendar"></i>
-                                            <!-- <input class="form-control input-box" id="inputDate" type="time" placeholder="Start Time" name="starttime"/> -->
-                                            {{form.starttime|as_crispy_field}}
-                                            <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="col-sm-6 col-md-6 col-xl-5">
-                                        <div class="input-group-icon"><i class="fas fa-calendar"></i><label class="form-label visually-hidden" for="inputEvent">Address 1</label><input class="form-control input-box form-voyage-control" id="inputAddress1" type="text" placeholder="From where" /><span class="nav-link-icon text-800 fs--1 input-box-icon"></span></div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-xl-5">
-                                        <div class="input-group-icon"><label class="form-label visually-hidden" for="inputAddress2">Address 2</label><input class="form-control input-box form-voyage-control" id="inputAddress2" type="text" placeholder="To where" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-map-marker-alt"> </i></span></div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-xl-5">
-                                        <div class="input-group-icon"><input class="form-control input-box form-voyage-control" id="inputdateOne" type="date" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-calendar"></i></span></div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-xl-5">
-                                        <div class="input-group-icon"><input class="form-control input-box form-voyage-control" id="inputDateTwo" type="date" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-calendar"></i></span></div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-xl-5">
-                                        <div class="input-group-icon"><label class="form-label visually-hidden" for="inputPersonOne">Person</label><select class="form-select form-voyage-select input-box" id="inputPersonOne">
-                                            <option selected="selected">2 Adults</option>
-                                            <option>2 Adults 1 children</option>
-                                            <option>2 Adults 2 children</option>
-                                        </select><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-user"> </i></span></div>
-                                    </div> -->
-                                    <div class="col-12 col-xl-10 col-lg-12 d-grid mt-5"><button class="btn btn-secondary" type="submit">Let's Set</button></div>
-                                </form>
-                            </div>
-                            <!-- <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                <form class="row g-4 mt-5">
-                                <div class="col-6">
-                                    <div class="input-group-icon"><label class="form-label visually-hidden" for="inputAddressThree">Address 1</label><input class="form-control input-box form-voyage-control" id="inputAddressThree" type="text" placeholder="From where" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-map-marker-alt"></i></span></div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="input-group-icon"><label class="form-label visually-hidden" for="inputAddressFour">Address 2</label><input class="form-control input-box form-voyage-control" id="inputAddressFour" type="text" placeholder="To where" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-map-marker-alt"> </i></span></div>
+                                <div class="col-sm-12 col-md-12 col-xl-11">
+                                    <div class="input-group-icon">
+                                        <!-- <i class="fas fa-user"></i> -->
+                                        <!-- <input class="form-control input-box" id="inputGroup" type="text" placeholder="Your Group" name="group"/> -->
+                                        {{form.group|as_crispy_field}}
+                                        <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="input-group-icon"><input class="form-control input-box form-voyage-control" id="inputDateThree" type="date" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-calendar"></i></span></div>
+                                <div class="col-sm-12 col-md-12 col-xl-11">
+                                    <div class="input-group-icon">
+                                        <!-- <i class="fas fa-map-marker-alt"></i> -->
+                                        <!-- <input class="form-control input-box" id="inputLocation" type="text" placeholder="Your Location" name="location"/> -->
+                                        {{form.location|as_crispy_field}}
+                                        <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="input-group-icon"><input class="form-control input-box form-voyage-control" id="inputDateFour" type="date" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-calendar"></i></span></div>
+                                <div class="col-sm-6 col-md-6 col-xl-5">
+                                    <div class="input-group-icon">
+                                        <!-- <i class="fas fa-calendar"></i> -->
+                                        <!-- <input class="form-control input-box" id="inputDate" type="date" placeholder="Date" name="date"/> -->
+                                        {{form.date|as_crispy_field}}
+                                        <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
+                                    </div>
                                 </div>
-                                <div class="col-6">
-                                    <div class="input-group-icon"><label class="form-label visually-hidden" for="inputPeopleTwo">People</label><select class="form-select form-voyage-select input-box" id="inputPeopleTwo">
-                                        <option selected="selected">2 Adults</option>
-                                        <option>2 Adults 1 children</option>
-                                        <option>2 Adults 2 children</option>
-                                    </select><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-user"> </i></span></div>
+                                <div class="col-sm-6 col-md-6 col-xl-5">
+                                    <div class="input-group-icon">
+                                        <!-- <i class="fas fa-calendar"></i> -->
+                                        <!-- <input class="form-control input-box" id="inputDate" type="time" placeholder="Start Time" name="starttime"/> -->
+                                        {{form.starttime|as_crispy_field}}
+                                        <span class="nav-link-icon text-800 fs--1 input-box-icon"></span>
+                                    </div>
                                 </div>
-                                <div class="col-12 d-grid mt-6"><button class="btn btn-secondary" type="submit">Search Packages</button></div>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                                <form class="row g-4 mt-5">
-                                <div class="col-6">
-                                    <div class="input-group-icon"><input class="form-control input-box form-voyage-control" id="inputDateFive" type="date" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-calendar"></i></span></div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="input-group-icon"><input class="form-control input-box form-voyage-control" id="inputDateSix" type="date" /><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-calendar"></i></span></div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="input-group-icon"><label class="form-label visually-hidden" for="inputPeopleThree">Person</label><select class="form-select form-voyage-select input-box" id="inputPeopleThree">
-                                        <option selected="selected">2 Adults</option>
-                                        <option>2 Adults 1 children</option>
-                                        <option>2 Adults 2 children</option>
-                                    </select><span class="nav-link-icon text-800 fs--1 input-box-icon"><i class="fas fa-user"> </i></span></div>
-                                </div>
-                                <div class="col-12 d-grid mt-6"><button class="btn btn-secondary" type="submit">Search Packages</button></div>
-                                </form>
-                            </div> -->
+                                <div class="col-12 col-xl-10 col-lg-12 d-grid mt-5"><button class="btn btn-secondary" type="submit">Let's Set</button></div>
+                            </form>
                         </div>
-                    </nav>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+            <div class="col-lg-7 py-4 py-xl-4 py-xxl-4">
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -140,21 +81,42 @@
                     <tbody>
                         {% for event in events %}
                         <tr>
-                            <th scope="row">{{event.title}}</th>
-                            <td><a href="{% url 'group' event.group.id %}">{{event.group}}</a></td>
-                            <td><a href="{% url 'profile' event.group.creator.id %}">{{event.group.creator.username}}</a></td>
-                            <td>{{event.location}}</td>
-                            <td>{{event.date}}</td>
-                            <td>{{event.starttime}}</td>
+                            <th scope="row" class="text-nowrap">{{event.title}}</th>
+                            <td class="text-nowrap"><a href="{% url 'group' event.group.id %}">{{event.group}}</a></td>
+                            <td class="text-nowrap"><a href="{% url 'profile' event.group.creator.id %}">{{event.group.creator.username}}</a></td>
+                            <td class="text-nowrap">{{event.location}}</td>
+                            <td class="text-nowrap">{{event.date}}</td>
+                            <td class="text-nowrap">{{event.starttime}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                <div class="row">
+                    <nav aria-label="Message navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{page_obj.previous_page_number}}">Previous</a>
+                                </li>
+                            {% endif %}
+                            {% for page_num in page_obj.paginator.page_range %}
+                                {% if page_num == page_obj.number %}
+                                    <li class="page-item active"><a class="page-link" href="?page={{page_num}}">{{page_num}}</a></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{page_num}}">{{page_num}}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{page_obj.next_page_number}}">Next</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
             </div>
-            
         <!-- end of row -->
         </div>
-
     </div>
 </section>
 {% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Profile{% endblock %}
+{% block extra_header %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+{% block content %}
+{% include 'navbar.html' %}
+{% if not not_responded %}
+<div class="text-center mt-5"><h3>There is no invitation you have..</h3></div>
+{% else %}
+<div class="container">
+    <div class="row mx-2">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 border-bottom mt-5">
+            <div class="row mb-3 text-center">
+                <h3>You have a invitation from {{current_inv.group.name}}</h3>
+                <h3>Do you like to join?</h3>
+                <div class="text-center mt-3">
+                    <a href="{% url 'accept_invitation' current_inv.id %}" class="me-3"><button class="btn btn-secondary">Yes</button></a>
+                    <a href="{% url 'reject_invitation' current_inv.id %}" class="me-3"><button class="btn btn-secondary">No</button></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+            <div class="pt-5 text-center">
+                <p>Map Here</p>
+                <p>{{current_inv.group.gym}}</p>
+            </div>
+        </div>
+        <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+                <div class="mb-3 row">
+                    <label for="staticLimit" class="col-sm-3 col-form-label">Member Limit:</label>
+                    <div class="col-sm-2">
+                        <p class="pt-2">{{current_inv.group.limit}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="staticLevel" class="col-sm-3 col-form-label">Fitness Level:</label>
+                    <div class="col-sm-9">
+                        <p class="pt-2">{{current_inv.group.get_level_display}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="staticDescription" class="col-sm-3 col-form-label">Description:</label>
+                    <div class="col-sm-9">
+                        <p class="pt-2">{{current_inv.group.description}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-3 col-form-label">Leader:</label>
+                    <div class="col-sm-9 pt-2">
+                        <a href=""><p>{{current_inv.group.creator.username}}</p></a>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label class="col-sm-3 col-form-label">Members:</label>
+                    <div class="col-sm-9 pt-2">
+                        {% for member in current_inv.group.member.all %}
+                        <a href="" class="me-3">{{member.username}}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    <!-- end of row -->
+    </div>
+<!-- end of container -->
+</div>
+<!-- <div class="container mt-5">
+    <div class="row gutters">
+        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="account-settings">
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
+                            </div>
+                            <h5 class="user-name">{{current_inv.who_requested.username}}</h5>
+                            <h6 class="user-email">{{current_inv.who_requested.email}}</h6>
+                        </div>
+                        <div class="about">
+                            <h5>About</h5>
+                            <p>{{current_inv.who_requested.goal}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="row gutters">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h6 class="mb-3 text-primary">Information</h6>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <h6 class="mb-3 text-primary">Message</h6>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            <div class="row mb-3">
+                                <label for="birthday" class="col-6">Birthday:</label>
+                                <span class="col-6">{{current_inv.who_requested.birthday}}</span>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="benchpress" class="col-6">Max of benchpress (lbs):</label>
+                                <span class="col-6">{{current_inv.who_requested.benchpress}} lbs</span>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="sport" class="col-6">Favorite Sport:</label>
+                                <ul class="col-6">
+                                    {% for sport in current_inv.who_requested.sport.all %}
+                                    <li>{{sport.name}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div> -->
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

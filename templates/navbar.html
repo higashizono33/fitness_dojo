@@ -17,8 +17,25 @@
                         <li class="nav-item ms-3">
                             <a class="nav-link active" aria-current="page" href="{% url 'create_group' %}">Group</a>
                         </li>
-                        <li class="nav-item ms-3">
-                            <a class="nav-link active" aria-current="page" href="{% url 'request_confirm' %}">Request</a>
+                        <li class="nav-item ms-3 position-relative">
+                            <a class="nav-link active" aria-current="page" href="{% url 'request_confirm' %}">Request
+                                {% if request.session.count_req %}
+                                <span class="position-absolute top-5 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{request.session.count_req}}
+                                    <span class="visually-hidden">unread messages</span>
+                                </span>
+                                {% endif %}
+                            </a>
+                        </li>
+                        <li class="nav-item ms-3 position-relative">
+                            <a class="nav-link active" aria-current="page" href="{% url 'invitation_confirm' %}">Invitation
+                                {% if request.session.count_inv %}
+                                <span class="position-absolute top-5 start-100 translate-middle badge rounded-pill bg-danger">
+                                    {{request.session.count_inv}}
+                                    <span class="visually-hidden">unread messages</span>
+                                </span>
+                                {% endif %}
+                            </a>
                         </li>
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">

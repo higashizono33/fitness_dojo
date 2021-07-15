@@ -2,20 +2,31 @@ from django.views.generic.edit import CreateView
 from app.models import Event
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, UpdateView, UpdateView, TemplateView
-from .models import Event, Group, Request
+from .models import Event, Group, Invitation, Request
 from .forms import EventCreateForm, GroupEditForm, ProfileEditForm, ResetPasswordForm, GroupCreateForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from django.urls import reverse_lazy
-from django.db.models import Q
 
 User = get_user_model()
+
+
+def count_not_responded_request(request, logged_user):
+    user_groups = Group.objects.filter(creator=logged_user)
+    not_responded_req = Request.objects.filter(group__in=user_groups).filter(is_responded=False)
+    request.session['count_req'] = not_responded_req.count()
+    return 
+
+def count_not_responded_invitation(request, logged_user):
+    not_responded_inv = Invitation.objects.filter(invited_who=logged_user).filter(is_responded=False)
+    request.session['count_inv'] = not_responded_inv.count()
+    return 
 
 class HomeView(ListView):
     model = Event
     template_name = 'home.html'
     context_object_name = 'events'
-    paginate_by = 20
+    paginate_by = 10
     
     def get_queryset(self):
         queryset = super(HomeView, self).get_queryset()
@@ -25,11 +36,12 @@ class HomeView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = EventCreateForm(user=self.request.user)
+        count_not_responded_request(self.request, self.request.user)
+        count_not_responded_invitation(self.request, self.request.user)
         return context
     
     def post(self, request, *args, **kwargs):
         form = EventCreateForm(request.POST, user=request.user)
-        print(form)
         if form.is_valid():
             form.save()
             return redirect('home')
@@ -55,11 +67,29 @@ class CreateGroupView(CreateView):
         form.save()
         return super(CreateGroupView, self).form_valid(form)
 
+def destroy_group(request, pk):
+    destroyed = get_object_or_404(Group, pk=pk)
+    if destroyed.creator == request.user:
+        destroyed.delete()
+    return redirect('create_group')
+
+def exit_group(request, pk):
+    exited = get_object_or_404(Group, pk=pk)
+    if request.user in exited.member.all():
+        exited.member.remove(request.user)
+        exited.save()
+    return redirect('create_group')
+
 class GroupView(UpdateView):
     model = Group
     template_name = 'group.html'
     form_class = GroupEditForm
     context_object_name = 'group'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['non_members'] = User.objects.exclude(join_groups=self.get_object()).exclude(id=self.request.user.id).exclude(is_superuser=True)
+        return context
 
     def post(self, request, *args, **kwargs):
         group = self.get_object()
@@ -101,14 +131,13 @@ class ActivityView(ListView):
 
 def request_group(request, pk):
     group = get_object_or_404(Group, pk=pk)
-    if group.can_request():
+    if request.method == 'POST' and group.can_request():
         new_request = Request.objects.create(
             who_requested = request.user,
             group = group,
+            message = request.POST['message'],
         )
-        return redirect('activity', pk)
-    else:
-        return redirect('activity', pk)
+    return redirect('activity', pk)
 
 class RequestView(TemplateView):
     template_name = 'request.html'
@@ -129,15 +158,55 @@ def accept_request(request, pk):
         accept_req.is_accepted = True
         accept_req.save()
         accept_req.group.member.add(accept_req.who_requested)
-    else:
-        pass
+        count_not_responded_request(request, request.user)
     return redirect('request_confirm')
 
 def reject_request(request, pk):
     reject_req = get_object_or_404(Request, pk=pk)
     reject_req.is_responded = True
     reject_req.save()
+    count_not_responded_request(request, request.user)
     return redirect('request_confirm')
+
+def invite_group(request, pk):
+    # invited_before = Invitation.objects.filter(group=group).filter(invited_who=invited_user)
+    # if request.method == 'POST' and invited_before.count() == 0:
+    if request.method == 'POST' and request.POST['user'] != '':
+        group = get_object_or_404(Group, pk=pk)
+        invited_user = get_object_or_404(User, pk=request.POST['user'])
+        new_invitation = Invitation.objects.create(
+            group = group,
+            invited_who = invited_user,
+        )
+    return redirect('group', pk)
+
+class InvitationView(TemplateView):
+    template_name = 'invitation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        not_responded = Invitation.objects.filter(invited_who=self.request.user).filter(is_responded=False)
+        if not_responded.count() > 0:
+            context['not_responded'] = True
+            context['current_inv'] = not_responded[0]
+        return context
+
+def accept_invitation(request, pk):
+    accept_inv = get_object_or_404(Invitation, pk=pk)
+    if accept_inv.invited_who == request.user:
+        accept_inv.is_responded = True
+        accept_inv.is_accepted = True
+        accept_inv.save()
+        accept_inv.group.member.add(accept_inv.invited_who)
+        count_not_responded_invitation(request, request.user)
+    return redirect('invitation_confirm')
+
+def reject_invitation(request, pk):
+    reject_inv = get_object_or_404(Invitation, pk=pk)
+    reject_inv.is_responded = True
+    reject_inv.save()
+    count_not_responded_invitation(request, request.user)
+    return redirect('invitation_confirm')
 
 class ProfileView(UpdateView):
     model = User
@@ -154,13 +223,11 @@ class ProfileView(UpdateView):
         update_user = self.get_object()
         form = ProfileEditForm(request.POST, instance=update_user)
         if form.is_valid():
-            print('success')
             update_object = form.save(commit=False)
             update_object.save()
             form.save_m2m()
             return redirect('profile', update_user.id)
         else:
-            print('error')
             context = {
                 'form': form,
                 'p_form': ResetPasswordForm(self.get_object()),
@@ -175,10 +242,8 @@ def reset_password(request, pk):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            print('success!!')
             return redirect('profile', update_user.id)
         else:
-            print('error')
             context = {
                 'profile': update_user,
                 'p_form': form,

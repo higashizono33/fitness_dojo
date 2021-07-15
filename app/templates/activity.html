@@ -8,13 +8,39 @@
     <!--/.bg-holder-->
     <div class="container pt-5">
         <h1 class="display-5 text-1000 fw-normal d-inline">{{group.name}} - Activities</h1>
-        {% if requested_before %}
+        {% if group.creator == user %}
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3 text-primary">*you are leader</h1>
+        {% elif requested_before %}
         <h1 class="fs-4 text-1000 fw-normal d-inline ms-3 text-danger">*you sent request</h1>
+        {% elif user in group.member.all %}
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3 text-danger"></h1>
         {% elif group.can_request %}
-        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="{% url 'request' group.id %}">send request</a></h1>
+        <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="" data-bs-toggle="modal" data-bs-target="#requestModal">send request</a></h1>
         {% else %}
         <h1 class="fs-4 text-1000 fw-normal d-inline ms-3 text-danger">*this group is full</h1>
         {% endif %}
+        <!-- Modal -->
+        <div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="requestModalLabel">Request to join {{group.name}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{% url 'request' group.id %}" method="POST">
+                    {% csrf_token %}
+                        <div class="modal-body">
+                            <label for="message">message here</label>
+                            <textarea name="message" id="" cols="10" rows="3" class="form-control"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button class="btn btn-primary">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
                 <table class="table table-striped">

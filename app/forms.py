@@ -9,6 +9,8 @@ from django.contrib.auth.forms import SetPasswordForm
 User = get_user_model()
 
 class EventCreateForm(ModelForm):
+    date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), required=True)
+    starttime = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}), required=True)
     
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -16,10 +18,11 @@ class EventCreateForm(ModelForm):
         super(EventCreateForm, self).__init__(*args, **kwargs)
         group_list = []
         groups = Group.objects.filter(creator=self.logged_user)
+        group_list.append(('', ''))
         for group in groups:
             group_list.append((group.id, group.name))
-
         self.fields['group'].choices = group_list
+        
     
     class Meta:
         model = Event
