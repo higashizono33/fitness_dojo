@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block title %}Group Detail{% endblock %}
+{% block extra_header %}
+<link rel="stylesheet" href="{% static 'css/message.css' %}">
+{% endblock%}
 {% block content %}
 {% include 'navbar.html' %}
 <section class="mt-7 py-0">
@@ -47,31 +51,136 @@
                     <thead>
                         <tr>
                             <th scope="col">Event</th>
-                            <th scope="col">Group</th>
                             <th scope="col">Creator</th>
                             <th scope="col">Location</th>
                             <th scope="col">Date</th>
+                            <th scope="col">Time</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for event in events %}
                         <tr>
-                            <th scope="row"><a href="">{{event.title}}</a></th>
-                            <td><a href="{% url 'group' event.group.id %}">{{event.group}}</a></td>
-                            <td>{{event.group.creator.username}}</td>
+                            <th scope="row"><a href="{% url 'filtered_activity' group.id event.id  %}">{{event.title}}</a></th>
+                            <td><a href="{% url 'profile' event.group.creator.id %}">{{event.group.creator.username}}</a></td>
                             <td>{{event.location}}</td>
                             <td>{{event.date}}</td>
+                            <td>{{event.starttime}}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+                                
+        <div class="col-md-5 py-5 ms-5">
+            <div class="portlet portlet-default">
+                <div class="portlet-heading">
+                    <div class="portlet-title">
+                        <h4 class="pt-1">"{{event.title}}"</h4>
+                    </div>
+                    <div class="portlet-widgets">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-white" data-toggle="dropdown">
+                                {% if event.is_past %}
+                                <i class="fa fa-circle text-red"></i> Status: Done
+                                {% else %}
+                                <i class="fa fa-circle text-green"></i> Status: Incoming
+                                {% endif %}
+                                <span class="caret"></span>
+                            </button>
+                            <!-- <ul class="dropdown-menu" role="menu">
+                                <li><a href="#"><i class="fa fa-circle text-green"></i> Online</a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-circle text-orange"></i> Away</a>
+                                </li>
+                                <li><a href="#"><i class="fa fa-circle text-red"></i> Offline</a>
+                                </li>
+                            </ul> -->
+                        </div>
+                        <!-- <span class="divider"></span>
+                        <a data-toggle="collapse" data-parent="#accordion" href="#chat"><i class="fa fa-chevron-down"></i></a> -->
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div id="chat" class="panel-collapse in">
+                    <div>
+                    <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 300px;">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p class="text-center text-muted small">Meet on {{event.date}} at {{event.starttime}}</p>
+                            </div>
+                        </div>
+                        {% for message in messages %}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <div class="d-flex mb-3">
+                                            <img class="media-object img-circle img-chat" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                                            <h4 class="media-heading ms-2">{{message.sender.username}}
+                                                <span class="small pull-right">{{message.created_at}}</span>
+                                            </h4>
+                                        </div>
+                                        <p>{{message.message}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% for comment in message.comments.all %}
+                        <div class="row text-end">
+                            <div class="col-lg-12">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <div class="mb-3 justify-content-end">
+                                            <p class="mb-0">{{comment.sender.username}}</p>
+                                            <img class="media-object img-circle img-chat" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">
+                                            <!-- <h4 class="media-heading">{{comment.sender.username}}
+                                                <span class="small pull-right">{{comment.created_at}}</span>
+                                            </h4> -->
+                                        </div>
+                                        <p>{{comment.comment}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <p>
+                            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapseExample">
+                                reply
+                            </button>
+                        </p>
+                        <div class="collapse" id="collapse{{forloop.counter}}">
+                            <form action="{% url 'comment' message.id %}" method="POST">
+                                {% csrf_token %}
+                                <textarea name="comment" id="" cols="30" rows="3" class="form-control" placeholder="reply here"></textarea>
+                                <button class="btn btn-secondary p-0 mt-2">send</button>
+                            </form>
+                        </div>
+                        <hr>
+                        {% endfor %}
+                    </div>
+                    </div>
+                    <div class="portlet-footer">
+                        <form action="" method="POST" novalidate>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <textarea class="form-control" placeholder="Enter message..." name="message"></textarea>
+                            </div>
+                            <div class="form-group d-flex justify-content-end">
+                                <button class="btn btn-secondary pull-right">Send</button>
+                                <div class="clearfix"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.col-md-4 -->
+            <!-- <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
                 <form action="" method="POST" novalidate>
                     {% csrf_token %}
                     <h1>Chat Here</h1>
                 </form>
-            </div>
+            </div> -->
         <!-- end of row -->
         </div>
     </div>

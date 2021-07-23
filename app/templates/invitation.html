@@ -4,11 +4,12 @@
 {% block title %}Profile{% endblock %}
 {% block extra_header %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/map.css' %}">
 {% endblock %}
 {% block content %}
 {% include 'navbar.html' %}
 {% if not not_responded %}
-<div class="text-center mt-5"><h3>There is no invitation you have..</h3></div>
+<div class="text-center py-5"><h3>There is no invitation you have..</h3></div>
 {% else %}
 <div class="container">
     <div class="row mx-2">
@@ -22,13 +23,20 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
-            <div class="pt-5 text-center">
-                <p>Map Here</p>
-                <p>{{current_inv.group.gym}}</p>
+        <div class="col-lg-6 py-5 py-xl-5 py-xxl-7 pe-5">
+            <div class="text-center">
+                <div class="text-center">
+                    <div id="map"></div>
+                </div>
             </div>
         </div>
         <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
+                <div class="mb-3 row">
+                    <label for="staticAddress" class="col-sm-3 col-form-label">Gym Address:</label>
+                    <div class="col-sm-9">
+                        <p class="pt-2" id="id_gym">{{current_inv.group.gym}}</p>
+                    </div>
+                </div>
                 <div class="mb-3 row">
                     <label for="staticLimit" class="col-sm-3 col-form-label">Member Limit:</label>
                     <div class="col-sm-2">
@@ -63,65 +71,16 @@
                 </div>
             </form>
         </div>
+    </div>
     <!-- end of row -->
-    </div>
+</div>
 <!-- end of container -->
-</div>
-<!-- <div class="container mt-5">
-    <div class="row gutters">
-        <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="account-settings">
-                        <div class="user-profile">
-                            <div class="user-avatar">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
-                            </div>
-                            <h5 class="user-name">{{current_inv.who_requested.username}}</h5>
-                            <h6 class="user-email">{{current_inv.who_requested.email}}</h6>
-                        </div>
-                        <div class="about">
-                            <h5>About</h5>
-                            <p>{{current_inv.who_requested.goal}}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="row gutters">
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <h6 class="mb-3 text-primary">Information</h6>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <h6 class="mb-3 text-primary">Message</h6>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                            <div class="row mb-3">
-                                <label for="birthday" class="col-6">Birthday:</label>
-                                <span class="col-6">{{current_inv.who_requested.birthday}}</span>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="benchpress" class="col-6">Max of benchpress (lbs):</label>
-                                <span class="col-6">{{current_inv.who_requested.benchpress}} lbs</span>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="sport" class="col-6">Favorite Sport:</label>
-                                <ul class="col-6">
-                                    {% for sport in current_inv.who_requested.sport.all %}
-                                    <li>{{sport.name}}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div> -->
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endif %}
+{% endblock %}
+{% block javascript %}
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&callback=initMap"
+    async defer
+></script>
+<script src="{% static 'js/map_display_search.js' %}"></script>
 {% endblock %}

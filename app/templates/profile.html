@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 {% include 'navbar.html' %}
-<div class="container mt-5">
+<div class="container py-5">
     <div class="row gutters">
         <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
             <div class="card h-100">
@@ -145,15 +145,19 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="row mb-3">
                                 <label for="own_groups">Own Group:</label>
-                                {% for group in profile.own_groups.all %}
-                                <p class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></p>
-                                {% endfor %}
+                                <div class="d-flex">
+                                    {% for group in profile.own_groups.all %}
+                                    <p class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></p>
+                                    {% endfor %}
+                                </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="join_groups">Join Group:</label>
-                                {% for group in profile.join_groups.all %}
-                                <span class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></span>
-                                {% endfor %}
+                                <div class="d-flex">
+                                    {% for group in profile.join_groups.all %}
+                                    <span class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></span>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>

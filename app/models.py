@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core import validators
+from datetime import date
 
 User = get_user_model()
 
@@ -64,6 +65,10 @@ class Event(models.Model):
 
     def __str__(self):
         return f'{self.title} - Group#{self.group.id}'
+
+    @property
+    def is_past(self):
+        return date.today() > self.date
 
 class Message(models.Model):
     event = models.ForeignKey(Event, related_name='messages', on_delete=models.CASCADE)

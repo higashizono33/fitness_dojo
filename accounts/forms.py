@@ -10,8 +10,6 @@ User = get_user_model()
 class CustomUserCreateForm(UserCreationForm):
     email = forms.EmailField(required=True)
     username = forms.CharField(max_length=50, required=True)
-    # first_name = forms.CharField(max_length=50, required=True)
-    # last_name = forms.CharField(max_length=50, required=True)
     
     def __init__(self, *args, **kwargs):
         super(CustomUserCreateForm, self).__init__(*args, **kwargs)
@@ -20,7 +18,6 @@ class CustomUserCreateForm(UserCreationForm):
             self.fields[fieldname].help_text = None
         helper = self.helper = FormHelper()
         layout = helper.layout = Layout(
-            # PrependedText('first_name', '<i class="fas fa-user py-1"></i>', placeholder="first name"),
             PrependedText('username', '<i class="fas fa-user py-1"></i>', placeholder="username"),
             PrependedText('email', '<i class="fas fa-envelope-square py-1"></i>', placeholder="email"),
             PrependedText('password1', '<i class="fas fa-key py-1"></i>', placeholder="password"),
@@ -39,7 +36,6 @@ class CustomUserCreateForm(UserCreationForm):
         user = super(CustomUserCreateForm, self).save(commit=False)
         user.email = self.cleaned_data["email"]
         user.username = self.cleaned_data["username"]
-        # user.last_name = self.cleaned_data["last_name"]
         if commit:
             user.save()
         return user

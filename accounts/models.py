@@ -5,11 +5,9 @@ from django.utils import timezone
 from django.core import validators
 import os
 from uuid import uuid4
-# from ..app.models import Sport
 
 #moved from app
 class Sport(models.Model):
-    # user = models.ManyToManyField(User, related_name='favorite_sports')
     name = models.CharField(max_length=100, null=False, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -53,8 +51,6 @@ def path_and_rename(instance, filename):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('email address', unique=True)
     username = models.CharField('username', unique=True, max_length=50, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
-    # first_name = models.CharField('first_name', max_length=50, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
-    # last_name = models.CharField('last_name', max_length=50, validators=[validators.MinLengthValidator(2, 'Please enter at least 2 charactors')])
     photo = models.ImageField(upload_to=path_and_rename, null=True, blank=True)
     birthday = models.DateField('birthday', null=True, blank=True)
     benchpress = models.IntegerField('benchpress', null=True, blank=True)

@@ -50,7 +50,7 @@ class GroupEditForm(ModelForm):
 
     class Meta:
         model = Group
-        fields = ['limit', 'level', 'description']
+        fields = ['gym', 'limit', 'level', 'description']
 
 class ProfileEditForm(ModelForm):
     # photo = forms.ImageField(required=False)

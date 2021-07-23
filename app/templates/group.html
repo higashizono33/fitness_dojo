@@ -4,12 +4,12 @@
 {% block title %}Group Management{% endblock %}
 {% block extra_header %}
 <link rel="stylesheet" href="{% static 'css/group.css' %}">
+<link rel="stylesheet" href="{% static 'css/map.css' %}">
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 {% endblock %}
 {% block content %}
 {% include 'navbar.html' %}
 <section class="mt-7 py-0">
-    <!-- <div class="bg-holder w-50 bg-right d-none d-lg-block" style="background-image:url(assets/img/gallery/hero-section-1.png);"></div> -->
-    <!--/.bg-holder-->
     <div class="container pt-5">
         <h1 class="display-5 text-1000 fw-normal d-inline">{{group.name}}</h1>
         <h1 class="fs-4 text-1000 fw-normal d-inline ms-3"><a href="{% url 'activity' group.id %}">see activities</a></h1>
@@ -43,48 +43,63 @@
                 </div>
             </div>
         </div>
+        <!-- end of Modal -->
         <div class="row">
-            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
-                <div class="pt-5 text-center">
-                    <p>Map Here</p>
-                    <p>{{group.gym}}</p>
+            <div class="col-lg-6 py-5 py-xl-5 py-xxl-7 pe-5">
+                {% if user == group.creator %}
+                <input
+                    id="pac-input"
+                    class="controls"
+                    type="text"
+                    placeholder="Search Box"
+                />
+                {% endif %}
+                <div class="text-center">
+                    <div class="text-center">
+                        <div id="map"></div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
                 <form action="" method="POST" novalidate>
                     {% csrf_token %}
                     <div class="mb-3 row">
+                        <label for="staticLimit" class="col-sm-3 col-form-label">Gym Address:</label>
+                        <div class="col-sm-9">
+                            {% if user == group.creator %}
+                                {{form.gym|as_crispy_field}}
+                            {% else %}
+                                <p class="pt-2" id="id_gym">{{group.gym}}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
                         <label for="staticLimit" class="col-sm-3 col-form-label">Member Limit:</label>
                         <div class="col-sm-2">
                             {% if user == group.creator %}
-                            {{form.limit|as_crispy_field}}
-                            <!-- <input type="number" class="form-control" id="inputLimit" value="{{group.limit}}"> -->
+                                {{form.limit|as_crispy_field}}
                             {% else %}
-                            <p class="pt-2">{{group.limit}}</p>
+                                <p class="pt-2">{{group.limit}}</p>
                             {% endif %}
-                            <!-- <input type="text" readonly class="form-control-plaintext" id="staticLimit" value="email@example.com"> -->
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="staticLevel" class="col-sm-3 col-form-label">Fitness Level:</label>
                         <div class="col-sm-9">
                             {% if user == group.creator %}
-                            {{form.level|as_crispy_field}}
-                            <!-- <input type="text" class="form-control" id="inputLevel" value="{{group.get_level_display}}"> -->
+                                {{form.level|as_crispy_field}}
                             {% else %}
-                            <p class="pt-2">{{group.get_level_display}}</p>
+                                <p class="pt-2">{{group.get_level_display}}</p>
                             {% endif %}
-                            <!-- <input type="text" readonly class="form-control-plaintext" id="staticLevel" value="email@example.com"> -->
                         </div>
                     </div>
                     <div class="mb-3 row">
                         <label for="staticDescription" class="col-sm-3 col-form-label">Description:</label>
                         <div class="col-sm-9">
                             {% if user == group.creator %}
-                            {{form.description|as_crispy_field}}
-                            <!-- <textarea name="" id="" cols="30" rows="3" class="form-control">{{group.description}}</textarea> -->
+                                {{form.description|as_crispy_field}}
                             {% else %}
-                            <p class="pt-2">{{group.description}}</p>
+                                <p class="pt-2">{{group.description}}</p>
                             {% endif %}
                         </div>
                     </div>
@@ -98,20 +113,27 @@
                         <label class="col-sm-3 col-form-label">Members:</label>
                         <div class="col-sm-9 pt-2">
                             {% for member in group.member.all %}
-                            <a href="{% url 'profile' member.id %}" class="me-3">{{member.username}}</a>
+                                <a href="{% url 'profile' member.id %}" class="me-3">{{member.username}}</a>
                             {% endfor %}
                         </div>
                     </div>
                     {% if user == group.creator %}
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center pt-4">
                         <button class="btn btn-warning px-5 me-3">Edit</button>
                         <button class="btn btn-danger px-5">Delete</button>
                     </div>
                     {% endif %}
                 </form>
             </div>
-        <!-- end of row -->
         </div>
+        <!-- end of row -->
     </div>
 </section>
+{% endblock %}
+{% block javascript %}
+<script
+    src="https://maps.googleapis.com/maps/api/js?key={{api_key}}&callback=initAutocomplete&libraries=places&v=weekly"
+    async
+></script>
+<script src="{% static 'js/map_display_search.js' %}"></script>
 {% endblock %}

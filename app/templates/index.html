@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Index{% endblock %}
+{% block content %}
+<div id="content-wrapper">
+    <header class="header header--bg">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <img class="img-responsive" src="{% static 'images/running-man.png' %}" alt="">
+          </div>
+          <div class="col-lg-6 header__content">
+            <h1 class="title">Geometria Title Goes Here <span class="title-style"></span></h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud</p>
+            <a class="header__button" href="{% url 'signup' %}">Sign Up</a>
+            <a class="header__button" href="{% url 'login' %}">Log In</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <section class="steps">
+      <div class="container">
+        <div class="page-section text-center">
+          <h2 class="page-section__title">Three simple steps</h2>
+          <div class="page-section__title-style">
+            <span class="first-line"></span>
+            <span class="second-line"></span>
+          </div>
+          <p class="page-section__subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et</p>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="text-center steps__single steps__single-first">
+                <img src="{% static 'images/step1.png' %}" alt="">
+                <p>LOREM IPSUM DOLOR SIT AMET</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-center steps__single">
+                <img src="{% static 'images/step2.png' %}" alt="">
+                <p>LOREM IPSUM DOLOR SIT AMET</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-center steps__single steps__single-last">
+                <img src="{% static 'images/step3.png' %}" alt="">
+                <p>LOREM IPSUM DOLOR SIT AMET</p>
+              </div>
+            </div>
+          </div>
+          <a class="button" href="#">TRY NOW</a>
+        </div>
+      </div>
+    </section>
+    <section class="video video--bg">
+      <div class="container">
+        <div class="page-section">
+          <div class="row">
+            <div class="col-md-7 video__left">
+            </div>
+            <div class="col-md-5">
+              <div class="video__right text-center">
+                <h2 class="video__title">Watch the video</h2>
+                <div class="video__title-style">
+                  <span class="first-line"></span>
+                  <span class="second-line"></span>
+                </div>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et</p>
+                <a class="button button--white" href="#">TRY NOW</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="container">
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <div class="embed-responsive embed-responsive-16by9">
+                <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/wKtPBOb80II?autoplay=0" frameborder="0" allowfullscreen="" id="video"  allowscriptaccess="always"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer footer--bg">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-4 footer__left text-center">
+            <a class="navbar-brand" href="#"></a>
+            <p>Copyright <span>&copy;</span> ??? 2021</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+{% endblock %}
