@@ -64,12 +64,22 @@
                 <form action="" method="POST" novalidate>
                     {% csrf_token %}
                     <div class="mb-3 row">
-                        <label for="staticLimit" class="col-sm-3 col-form-label">Gym Address:</label>
+                        <label for="staticGym" class="col-sm-3 col-form-label">Gym Name:</label>
                         <div class="col-sm-9">
                             {% if user == group.creator %}
                                 {{form.gym|as_crispy_field}}
                             {% else %}
                                 <p class="pt-2" id="id_gym">{{group.gym}}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="staticAddress" class="col-sm-3 col-form-label">Address:</label>
+                        <div class="col-sm-9">
+                            {% if user == group.creator %}
+                                {{form.address|as_crispy_field}}
+                            {% else %}
+                                <p class="pt-2" id="id_address">{{group.address}}</p>
                             {% endif %}
                         </div>
                     </div>

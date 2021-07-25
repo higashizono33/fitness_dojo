@@ -32,9 +32,15 @@
         </div>
         <div class="col-lg-6 py-5 py-xl-5 py-xxl-7">
                 <div class="mb-3 row">
-                    <label for="staticAddress" class="col-sm-3 col-form-label">Gym Address:</label>
+                    <label for="staticGym" class="col-sm-3 col-form-label">Gym Name:</label>
                     <div class="col-sm-9">
                         <p class="pt-2" id="id_gym">{{current_inv.group.gym}}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="staticAddress" class="col-sm-3 col-form-label">Address:</label>
+                    <div class="col-sm-9">
+                        <p class="pt-2" id="id_address">{{current_inv.group.address}}</p>
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -58,14 +64,14 @@
                 <div class="mb-3 row">
                     <label class="col-sm-3 col-form-label">Leader:</label>
                     <div class="col-sm-9 pt-2">
-                        <a href=""><p>{{current_inv.group.creator.username}}</p></a>
+                        <a href="{% url 'profile' current_inv.group.creator.id %}"><p>{{current_inv.group.creator.username}}</p></a>
                     </div>
                 </div>
                 <div class="mb-3 row">
                     <label class="col-sm-3 col-form-label">Members:</label>
                     <div class="col-sm-9 pt-2">
                         {% for member in current_inv.group.member.all %}
-                        <a href="" class="me-3">{{member.username}}</a>
+                            <a href="{% url 'profile' member.id %}" class="me-3">{{member.username}}</a>
                         {% endfor %}
                     </div>
                 </div>

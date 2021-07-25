@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core import validators
-from datetime import date
+from datetime import date, datetime
 
 User = get_user_model()
 
@@ -17,6 +17,7 @@ class Group(models.Model):
     #limit of members
     limit = models.IntegerField(validators=[validators.MinValueValidator(1, 'Please enter more than 1')])
     gym = models.CharField(max_length=100)
+    address = models.CharField(max_length=200)
     description = models.TextField(null=True)
     level = models.CharField(max_length=1, choices=LEVEL_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -68,7 +69,9 @@ class Event(models.Model):
 
     @property
     def is_past(self):
-        return date.today() > self.date
+        if date.today() >= self.date:
+            if datetime.now().time() > self.starttime:
+                return True
 
 class Message(models.Model):
     event = models.ForeignKey(Event, related_name='messages', on_delete=models.CASCADE)

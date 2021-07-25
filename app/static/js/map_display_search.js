@@ -1,11 +1,13 @@
 function initMap() {
     const target = document.getElementById('map');
-    const title = 'Lifetime'
     if(document.getElementById("id_gym").tagName == 'INPUT'){
-        var inputAddress = document.getElementById("id_gym").value
+        var inputGym = document.getElementById("id_gym").value
+        var inputAddress = document.getElementById("id_address").value
     }else{
-        var inputAddress = document.getElementById("id_gym").textContent
+        var inputGym = document.getElementById("id_gym").textContent
+        var inputAddress = document.getElementById("id_address").textContent
     }
+    const title = inputGym
     const geocoder = new google.maps.Geocoder();
 
     geocoder.geocode({ address: inputAddress }, function(results, status){

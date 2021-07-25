@@ -1,0 +1,49 @@
+{% for message in messages %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="media">
+                <div class="media-body">
+                    <div class="d-flex mb-3">
+                        {% if message.sender.photo %}
+                        <img class="media-object img-circle img-chat" src="{{message.sender.photo.url}}" alt="user_photo">
+                        {% endif %}
+                        <h4 class="media-heading ms-2">{{message.sender.username}}
+                            <span class="small pull-right">{{message.created_at}}</span>
+                        </h4>
+                    </div>
+                    <p>{{message.message}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% for comment in message.comments.all %}
+    <div class="row text-end">
+        <div class="col-lg-12">
+            <div class="media">
+                <div class="media-body">
+                    <div class="mb-3 justify-content-end">
+                        <p class="mb-0">{{comment.sender.username}}</p>
+                        {% if comment.sender.photo %}
+                        <img class="media-object img-circle img-chat" src="{{comment.sender.photo.url}}" alt="user_photo">
+                        {% endif %}
+                    </div>
+                    <p>{{comment.comment}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <p>
+        <button class="btn btn-primary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapseExample">
+            reply
+        </button>
+    </p>
+    <div class="collapse" id="collapse{{forloop.counter}}">
+        <form action="{% url 'comment' message.id %}" method="POST">
+            {% csrf_token %}
+            <textarea name="comment" id="" cols="30" rows="3" class="form-control" placeholder="reply here"></textarea>
+            <button class="btn btn-secondary py-0 mt-2">send</button>
+        </form>
+    </div>
+    <hr>
+{% endfor %}

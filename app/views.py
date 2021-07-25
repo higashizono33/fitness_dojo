@@ -4,16 +4,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, UpdateView, UpdateView, TemplateView
 from .models import Comment, Event, Group, Invitation, Message, Request
 from .forms import EventCreateForm, GroupEditForm, ProfileEditForm, ResetPasswordForm, GroupCreateForm
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth import update_session_auth_hash
 from django.urls import reverse_lazy
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 User = get_user_model()
 
+# to show numbers in badge at the navbar
 def count_not_responded_request(request, logged_user):
     user_groups = Group.objects.filter(creator=logged_user)
     not_responded_req = Request.objects.filter(group__in=user_groups).filter(is_responded=False)
@@ -28,15 +30,17 @@ def count_not_responded_invitation(request, logged_user):
 class IndexView(TemplateView):
     template_name = 'index.html'
 
-class HomeView(ListView):
+class HomeView(LoginRequiredMixin, ListView):
     model = Event
     template_name = 'home.html'
     context_object_name = 'events'
     paginate_by = 10
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     
     def get_queryset(self):
         queryset = super(HomeView, self).get_queryset()
-        queryset = Event.objects.all().order_by('created_at')
+        queryset = Event.objects.all().order_by('date','starttime')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -57,16 +61,13 @@ class HomeView(ListView):
                 'events': self.get_queryset(),
             }
             return render(request, 'home.html', context)
-            # ctx = {}
-            # ctx.update(csrf(request))
-            # form_html = render_crispy_form(form, context=ctx)
-            # return JsonResponse({'success': False, 'form_html': form_html})
 
-
-class CreateGroupView(CreateView):
+class CreateGroupView(LoginRequiredMixin, CreateView):
     template_name = 'create_group.html'
     form_class = GroupCreateForm
     success_url = reverse_lazy('create_group')
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -91,11 +92,13 @@ def exit_group(request, pk):
         exited.save()
     return redirect('create_group')
 
-class GroupView(UpdateView):
+class GroupView(LoginRequiredMixin, UpdateView):
     model = Group
     template_name = 'group.html'
     form_class = GroupEditForm
     context_object_name = 'group'
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -118,11 +121,13 @@ class GroupView(UpdateView):
             }
             return render(request, 'group.html', context)
 
-class ActivityView(ListView):
+class ActivityView(LoginRequiredMixin, ListView):
     model = Event
     template_name = 'activity.html'
     context_object_name = 'events'
     paginate_by = 20
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
     
     def get_group(self):
         group = get_object_or_404(Group, pk=self.kwargs['pk'])
@@ -144,15 +149,16 @@ class ActivityView(ListView):
             context['event'] = selected
             context['messages'] = Message.objects.filter(event=selected)
         else:
-            latest = Event.objects.last()
+            latest = Event.objects.filter(group=self.get_group()).last()
             context['event'] = latest
             context['messages'] = Message.objects.filter(event=latest)
         return context
 
     def post(self, request, *args, **kwargs):
-        if len(request.POST['message']) < 5:
-            print('error')
-            messages.error(request, 'error')
+        if len(request.POST['message']) < 1:
+            # print('error')
+            # messages.error(request, 'error')
+            return JsonResponse({'error': 'Please enter your message at least 2 charactors'})
         else:
             if 'event_id' in self.kwargs:
                 new_message = Message.objects.create(
@@ -167,7 +173,23 @@ class ActivityView(ListView):
                     sender = self.request.user,
                     message = self.request.POST['message'],
                 )
-        return redirect('activity', self.kwargs['pk'])
+        if 'event_id' in self.kwargs:
+            selected = get_object_or_404(Event, pk=self.kwargs['event_id'])
+            event = selected
+            messages = Message.objects.filter(event=selected)
+        else:
+            latest = Event.objects.filter(group=self.get_group()).last()
+            event = latest
+            messages = Message.objects.filter(event=latest)
+        context = {
+            'event': event,
+            'messages': messages,
+            'group': self.get_group(),
+            'user': self.request.user,
+        }
+        html = render_to_string('partial/chat.html', context, request=request)
+        return JsonResponse({'html': html})
+        # return redirect('activity', self.kwargs['pk'])
     # def post(self, request, *args, **kwargs):
     #     if len(request.POST['post']) < 15:
     #         return JsonResponse({'error': 'Please enter your post at least 15 charactors'})
@@ -201,7 +223,7 @@ class ActivityView(ListView):
         #     form.save()
         #     return redirect('home')
         # else:
-        
+
 def comment(request, message_id):
     if request.method == 'POST':
         this_message = get_object_or_404(Message, pk=message_id)
@@ -296,11 +318,13 @@ def reject_invitation(request, pk):
     count_not_responded_invitation(request, request.user)
     return redirect('invitation_confirm')
 
-class ProfileView(UpdateView):
+class ProfileView(LoginRequiredMixin, UpdateView):
     model = User
     template_name = 'profile.html'
     form_class = ProfileEditForm
     context_object_name = 'profile'
+    login_url = '/accounts/login/'
+    redirect_field_name = 'redirect_to'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -309,7 +333,7 @@ class ProfileView(UpdateView):
 
     def post(self, request, *args, **kwargs):
         update_user = self.get_object()
-        form = ProfileEditForm(request.POST, instance=update_user)
+        form = ProfileEditForm(request.POST, request.FILES, instance=update_user)
         if form.is_valid():
             update_object = form.save(commit=False)
             update_object.save()
@@ -329,7 +353,7 @@ def reset_password(request, pk):
         form = ResetPasswordForm(update_user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)
+            update_session_auth_hash(request, user.username)
             return redirect('profile', update_user.id)
         else:
             context = {
@@ -337,5 +361,5 @@ def reset_password(request, pk):
                 'p_form': form,
                 'form': ProfileEditForm(instance=update_user),
             }
-        return render(request, 'profile.html', context) 
+            return render(request, 'profile.html', context) 
     return redirect('profile', update_user.id)

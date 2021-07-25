@@ -110,10 +110,16 @@
                             </div>
                         </div>
                         <div class="mb-3 row">
-                            <label for="staticGym" class="col-sm-3 col-form-label">Home Gym:</label>
+                            <label for="staticGym" class="col-sm-3 col-form-label">Gym Name:</label>
+                            <div class="col-sm-9">
+                                {{form.gym|as_crispy_field}}
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="staticAddress" class="col-sm-3 col-form-label">Address:</label>
                             <div class="col-sm-9">
                                 <span class="text-danger">*can search address by using map</span>
-                                {{form.gym|as_crispy_field}}
+                                {{form.address|as_crispy_field}}
                             </div>
                         </div>
                         <div class="mb-3 row">

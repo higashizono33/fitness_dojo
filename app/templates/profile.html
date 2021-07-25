@@ -15,7 +15,9 @@
                     <div class="account-settings">
                         <div class="user-profile">
                             <div class="user-avatar">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin">
+                                {% if profile.photo %}
+                                <img src="{{profile.photo.url}}" alt="user_photo">
+                                {% endif %}
                             </div>
                             <h5 class="user-name">{{profile.username}}</h5>
                             <h6 class="user-email">{{profile.email}}</h6>
@@ -36,7 +38,7 @@
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                             <h6 class="mb-2 text-primary">Additional</h6>
                         </div>
-                        <form action="{% url 'profile' profile.id %}" method="POST" novalidate class="row">
+                        <form action="{% url 'profile' profile.id %}" enctype="multipart/form-data" method="POST" novalidate class="row">
                             {% csrf_token %}
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
@@ -61,7 +63,7 @@
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label for="sport">Favorite Sports</label>
+                                    <label for="sport">Favorite Sports <span class="text-danger">*can scroll and select multiples</span></label>
                                     {{form.sport|as_crispy_field}}
                                     <!-- <input type="text" class="form-control" id="zIp" placeholder="Zip Code"> -->
                                 </div>
@@ -97,18 +99,14 @@
                             {% csrf_token %}
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <!-- <label for="password">New Password</label> -->
                                     {{p_form.new_password1|as_crispy_field}}
-                                    <!-- <input type="password" class="form-control" id="password" placeholder="Enter new password"> -->
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <!-- <label for="password">Confirmed PW</label> -->
                                     {{p_form.new_password2|as_crispy_field}}
-                                    <!-- <input type="password" class="form-control" id="confirmed_pw" placeholder="Repeat new password"> -->
                                 </div>
-                                <button id="submit" name="submit" class="btn btn-primary">Update</button>
+                                <button id="submit" name="submit" class="btn btn-warning">Reset</button>
                             </div>
                         </form>
                     </div>

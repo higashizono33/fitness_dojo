@@ -8,6 +8,20 @@ from django.contrib.auth.forms import SetPasswordForm
 
 User = get_user_model()
 
+class GroupSelect(forms.Select):
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        option = super().create_option(
+            name, value, label, selected, index, subindex, attrs
+        )
+        if value:
+            group = Group.objects.get(pk=value)
+            option['attrs'].update({
+                'address': group.address
+            })
+        return option
+
 class EventCreateForm(ModelForm):
     date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), required=True)
     starttime = forms.TimeField(widget=forms.TextInput(attrs={'type': 'time'}), required=True)
@@ -22,11 +36,14 @@ class EventCreateForm(ModelForm):
         for group in groups:
             group_list.append((group.id, group.name))
         self.fields['group'].choices = group_list
-        
+        self.fields['location'].label = "Location <span class='text-danger'>*autofill with home gym address</span>"
     
     class Meta:
         model = Event
         fields = ['title', 'group', 'location', 'date', 'starttime']
+        widgets = {
+            'group': GroupSelect,
+        }
 
 class GroupCreateForm(ModelForm):
 
@@ -38,7 +55,7 @@ class GroupCreateForm(ModelForm):
 
     class Meta:
         model = Group
-        fields = ['name', 'gym', 'limit', 'level', 'description']
+        fields = ['name', 'gym', 'address', 'limit', 'level', 'description']
 
 class GroupEditForm(ModelForm):
 
@@ -50,7 +67,7 @@ class GroupEditForm(ModelForm):
 
     class Meta:
         model = Group
-        fields = ['gym', 'limit', 'level', 'description']
+        fields = ['gym', 'address', 'limit', 'level', 'description']
 
 class ProfileEditForm(ModelForm):
     # photo = forms.ImageField(required=False)
