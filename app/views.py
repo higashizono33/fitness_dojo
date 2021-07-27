@@ -62,6 +62,29 @@ class HomeView(LoginRequiredMixin, ListView):
             }
             return render(request, 'home.html', context)
 
+def delete_event(request, event_id):
+    event_to_delete = get_object_or_404(Event, pk=event_id)
+    if request.user == event_to_delete.group.creator:
+        event_to_delete.delete()
+    return redirect('home')
+
+def edit_date_event(request, event_id):
+    event_to_edit = get_object_or_404(Event, pk=event_id)
+    if request.method == 'POST':
+        if request.user == event_to_edit.group.creator:
+            print(request.POST['date'])
+            event_to_edit.date = request.POST['date']
+            event_to_edit.save()
+            return JsonResponse({'success': f'{event_to_edit.date}'})
+
+def edit_starttime_event(request, event_id):
+    event_to_edit = get_object_or_404(Event, pk=event_id)
+    if request.method == 'POST':
+        if request.user == event_to_edit.group.creator:
+            event_to_edit.starttime = request.POST['starttime']
+            event_to_edit.save()
+            return JsonResponse({'success': f'{event_to_edit.starttime}'})
+
 class CreateGroupView(LoginRequiredMixin, CreateView):
     template_name = 'create_group.html'
     form_class = GroupCreateForm
@@ -102,7 +125,7 @@ class GroupView(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['non_members'] = User.objects.exclude(join_groups=self.get_object()).exclude(id=self.request.user.id).exclude(is_superuser=True)
+        context['non_members'] = User.objects.exclude(join_groups=self.get_object()).exclude(id=self.request.user.id).exclude(is_superuser=True).exclude(invitations__is_responded=False)
         context['api_key'] = settings.GOOGLE_API_KEY
         return context
 
@@ -155,7 +178,7 @@ class ActivityView(LoginRequiredMixin, ListView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if len(request.POST['message']) < 1:
+        if len(request.POST['message']) < 2:
             # print('error')
             # messages.error(request, 'error')
             return JsonResponse({'error': 'Please enter your message at least 2 charactors'})
@@ -182,61 +205,31 @@ class ActivityView(LoginRequiredMixin, ListView):
             event = latest
             messages = Message.objects.filter(event=latest)
         context = {
-            'event': event,
             'messages': messages,
-            'group': self.get_group(),
-            'user': self.request.user,
+            # 'event': event,
+            # 'group': self.get_group(),
+            # 'user': self.request.user,
         }
         html = render_to_string('partial/chat.html', context, request=request)
         return JsonResponse({'html': html})
-        # return redirect('activity', self.kwargs['pk'])
-    # def post(self, request, *args, **kwargs):
-    #     if len(request.POST['post']) < 15:
-    #         return JsonResponse({'error': 'Please enter your post at least 15 charactors'})
-    #     video = get_object_or_404(Video, pk=kwargs['pk'])
-    #     if 'resident_id' not in request.session:
-    #         new = Post.objects.create(
-    #             user_posted = request.user,
-    #             posted_to = video,
-    #             post = request.POST['post']
-    #         )
-    #     else:
-    #         resident = get_object_or_404(Resident, pk=request.session['resident_id'])
-    #         new = Post.objects.create(
-    #             resident_posted = resident,
-    #             posted_to = video,
-    #             post = request.POST['post']
-    #         )
-    #     posts = Post.objects.filter(posted_to=video).order_by('-created_at')
-    #     post_page_number = self.request.GET.get('post_page')
-    #     post_paginator = Paginator(posts, 4)
-    #     posts = post_paginator.get_page(post_page_number)
-    #     context = {
-    #         'posts': posts,
-    #         'comments': Comment.objects.all().order_by('-created_at'),
-    #     }
-    #     html = render_to_string('partial/post.html', context, request=request)
-    #     return JsonResponse({'html': html})
-
-        # form = EventCreateForm(request.POST, user=request.user)
-        # if form.is_valid():
-        #     form.save()
-        #     return redirect('home')
-        # else:
 
 def comment(request, message_id):
     if request.method == 'POST':
         this_message = get_object_or_404(Message, pk=message_id)
-        if len(request.POST['comment']) < 5:
-            print('error')
-            messages.error(request, 'error')
+        if len(request.POST['comment']) < 2:
+            return JsonResponse({'error': 'Please enter your comment at least 2 charactors'})
         else:
             new_comment = Comment.objects.create(
                 message = this_message,
                 sender = request.user,
                 comment = request.POST['comment'],
             )
-        return redirect('activity', this_message.event.group.id)
+        context = {
+            'messages': Message.objects.filter(event=this_message.event),
+        }
+        html = render_to_string('partial/chat.html', context, request=request)
+        return JsonResponse({'html': html})
+        # return redirect('activity', this_message.event.group.id)
 
 def request_group(request, pk):
     group = get_object_or_404(Group, pk=pk)

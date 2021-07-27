@@ -4,6 +4,9 @@ from .views import *
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('home', HomeView.as_view(), name='home'),
+    path('delete/event/<int:event_id>', delete_event, name='delete_event'),
+    path('edit/date/event/<int:event_id>', edit_date_event, name='edit_date_event'),
+    path('edit/starttime/event/<int:event_id>', edit_starttime_event, name='edit_starttime_event'),
     path('create/group', CreateGroupView.as_view(), name='create_group'),
     path('destroy/group/<int:pk>', destroy_group, name='destroy_group'),
     path('exit/group/<int:pk>', exit_group, name='exit_group'),

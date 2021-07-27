@@ -4,6 +4,7 @@
 {% block title %}Group Detail{% endblock %}
 {% block extra_header %}
 <link rel="stylesheet" href="{% static 'css/message.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <style>
     .title {
         white-space: nowrap; 
@@ -169,7 +170,7 @@
                             {% endfor %} -->
                             </div>
                         </div>
-                        {% if user in group.member.all %}
+                        {% if user in group.member.all or user == group.creator %}
                         <div class="portlet-footer">
                             <span class="text-danger m_error"></span>
                             <form action="" method="POST" novalidate id="form_message" group="{{group.id}}" event="{{event.id}}">

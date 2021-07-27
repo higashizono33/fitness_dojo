@@ -143,7 +143,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                             <div class="row mb-3">
                                 <label for="own_groups">Own Group:</label>
-                                <div class="d-flex">
+                                <div class="d-flex flex-wrap">
                                     {% for group in profile.own_groups.all %}
                                     <p class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></p>
                                     {% endfor %}
@@ -151,7 +151,7 @@
                             </div>
                             <div class="row mb-3">
                                 <label for="join_groups">Join Group:</label>
-                                <div class="d-flex">
+                                <div class="d-flex flex-wrap">
                                     {% for group in profile.join_groups.all %}
                                     <span class="ms-5"><a href="{% url 'group' group.id %}">{{group.name}}</a></span>
                                     {% endfor %}

@@ -4,11 +4,18 @@
 {% block title %}Home{% endblock %}
 {% block extra_header %}
 <link rel="stylesheet" href="{% static 'css/cover.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<style>
+    .trash_box{
+        width: 25px;
+        height: 25px;
+    }
+</style>
 {% endblock %}
 {% block content %}
 <body class="d-flex h-100 text-center justify-content-center">
     {% include 'navbar.html' %}
-    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column" style="max-width: 70em;">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <main class="px-3">
             <div class="col-lg-12 py-5 py-xl-5 py-xxl-5">
                 <div>
@@ -74,18 +81,61 @@
                             <th scope="col">Location</th>
                             <th scope="col">Date</th>
                             <th scope="col">Start Time</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for event in events %}
                             {% if not event.is_past %}
                             <tr>
-                                <th scope="row" class="text-nowrap">{{event.title}}</th>
-                                <td class="text-nowrap"><a href="{% url 'group' event.group.id %}">{{event.group}}</a></td>
-                                <td class="text-nowrap"><a href="{% url 'profile' event.group.creator.id %}">{{event.group.creator.username}}</a></td>
-                                <td class="text-nowrap">{{event.location}}</td>
+                                <th scope="row" class="text-nowrap align-middle">{{event.title}}</th>
+                                <td class="text-nowrap align-middle"><a href="{% url 'group' event.group.id %}">{{event.group}}</a></td>
+                                <td class="text-nowrap align-middle"><a href="{% url 'profile' event.group.creator.id %}">{{event.group.creator.username}}</a></td>
+                                <td class="text-nowrap align-middle">{{event.location}}</td>
+                                {% if user == event.group.creator %}
+                                <td class="text-nowrap">
+                                    <form action="{% url 'edit_date_event' event.id %}" method="POST" class="date_form" event={{event.id}}>
+                                        {% csrf_token %}
+                                        <input type="date" class="form-control" value="{{event.date|date:'Y-m-d'}}" name="date">
+                                    </form>
+                                </td>
+                                {% else %}
                                 <td class="text-nowrap">{{event.date}}</td>
+                                {% endif %}
+                                {% if user == event.group.creator %}
+                                <td class="text-nowrap">
+                                    <form action="{% url 'edit_starttime_event' event.id %}" method="POST" class="starttime_form" event={{event.id}}>
+                                        {% csrf_token %}
+                                        <input type="time" class="form-control" value="{{event.starttime|time:'h:i:s'}}" name="starttime">
+                                    </form>
+                                </td>
+                                {% else %}
                                 <td class="text-nowrap">{{event.starttime}}</td>
+                                {% endif %}
+                                <td class="text-nowrap">
+                                    {% if user == event.group.creator %}
+                                    <img src="{% static 'images/trash_box.png' %}" alt="trash_box" class="trash_box" data-bs-toggle="modal" data-bs-target="#deleteModal{{forloop.counter}}">
+                                    {% endif %}
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="deleteModal{{forloop.counter}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel">Delete Your {{event.title}}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure to delete "{{event.title}}"?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary text-white" data-bs-dismiss="modal">Close</button>
+                                                    <a href="{% url 'delete_event' event.id %}"><button class="btn btn-danger">Delete</button></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end of Modal -->
+                                </td>
                             </tr>
                             {% endif %}
                         {% endfor %}
@@ -128,5 +178,11 @@
         var address = $('option:selected', this).attr('address')
         $('#id_location').val(address);
     })
+    var css = 
+        '.phase {animation-name:test; animation-duration:5s; animation-iteration-count:infinite; } @keyframes test{ 0%{color:#ff0000} 20%{color:#00ff00} 40%{color:#ffff00} 60%{color:#0000ff} 80%{color:#00ffff} 100%{color:#ff0000}', 
+        head = document.head || document.getElementsByTagName('head')[0], 
+        style = document.createElement('style'); style.type = 'text/css'; 
+        if (style.styleSheet){ style.styleSheet.cssText = css; } else { style.appendChild(document.createTextNode(css)); } head.appendChild(style);
 </script>
+<script src="{% static 'js/home.js' %}"></script>
 {% endblock %}

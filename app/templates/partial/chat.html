@@ -7,16 +7,29 @@
                         {% if message.sender.photo %}
                         <img class="media-object img-circle img-chat" src="{{message.sender.photo.url}}" alt="user_photo">
                         {% endif %}
-                        <h4 class="media-heading ms-2">{{message.sender.username}}
-                            <span class="small pull-right">{{message.created_at}}</span>
-                        </h4>
+                        <div>
+                            <h6 class="media-heading ms-2">{{message.sender.username}}
+                                <span class="small pull-right">{{message.created_at}}</span>
+                            </h6>
+                            <button class="btn btn-primary py-0 ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapseExample">
+                                reply
+                            </button>
+                        </div>
                     </div>
                     <p>{{message.message}}</p>
+                    <div class="collapse" id="collapse{{forloop.counter}}">
+                        <form action="{% url 'comment' message.id %}" method="POST">
+                            {% csrf_token %}
+                            <span class="text-danger c_error"></span>
+                            <textarea name="comment" id="" cols="30" rows="3" class="form-control text_comment" placeholder="reply here" message={{message.id}}></textarea>
+                            <!-- <button class="btn btn-secondary py-0 mt-2">send</button> -->
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    {% for comment in message.comments.all %}
+    {% for comment in message.comments.all.reverse %}
     <div class="row text-end">
         <div class="col-lg-12">
             <div class="media">
@@ -33,17 +46,5 @@
         </div>
     </div>
     {% endfor %}
-    <p>
-        <button class="btn btn-primary py-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="false" aria-controls="collapseExample">
-            reply
-        </button>
-    </p>
-    <div class="collapse" id="collapse{{forloop.counter}}">
-        <form action="{% url 'comment' message.id %}" method="POST">
-            {% csrf_token %}
-            <textarea name="comment" id="" cols="30" rows="3" class="form-control" placeholder="reply here"></textarea>
-            <button class="btn btn-secondary py-0 mt-2">send</button>
-        </form>
-    </div>
     <hr>
 {% endfor %}

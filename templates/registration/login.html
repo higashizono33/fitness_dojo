@@ -18,13 +18,13 @@
                     <div class="card-body">
                         <div class="d-flex">
                             <h3 class="mb-4">Log In</h3>
-                            {% if messages %}
+                            <!-- {% if messages %}
                                 {% for message in messages %}
                                     <div class="alert alert-success px-3 py-1 ms-3" role="alert">
                                         {{message}}
                                     </div>
                                 {% endfor %}
-                            {% endif %}
+                            {% endif %} -->
                         </div>
                         <form action="{% url 'login' %}" method="POST" novalidate>
                             {% csrf_token %}
