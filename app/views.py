@@ -12,6 +12,9 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
+from datetime import date, datetime
+
 
 User = get_user_model()
 
@@ -34,13 +37,21 @@ class HomeView(LoginRequiredMixin, ListView):
     model = Event
     template_name = 'home.html'
     context_object_name = 'events'
-    paginate_by = 10
+    paginate_by = 7
     login_url = '/accounts/login/'
     redirect_field_name = 'redirect_to'
     
     def get_queryset(self):
         queryset = super(HomeView, self).get_queryset()
-        queryset = Event.objects.all().order_by('date','starttime')
+        queryset = []
+        objects = Event.objects.all().order_by('date','starttime')
+        for obj in objects:
+            if obj.date > date.today():
+                queryset.append(obj)
+            if obj.date == date.today():
+                if obj.starttime > datetime.now().time():
+                    queryset.append(obj)
+        
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -56,9 +67,14 @@ class HomeView(LoginRequiredMixin, ListView):
             form.save()
             return redirect('home')
         else:
+            events = self.get_queryset()
+            paginator = Paginator(events, 7)
+            page_number = self.request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
             context = {
                 'form': form,
-                'events': self.get_queryset(),
+                'events': page_obj,
+                'page_obj': page_obj,
             }
             return render(request, 'home.html', context)
 
@@ -66,7 +82,7 @@ def delete_event(request, event_id):
     event_to_delete = get_object_or_404(Event, pk=event_id)
     if request.user == event_to_delete.group.creator:
         event_to_delete.delete()
-    return redirect('home')
+    return JsonResponse({'delete': True})
 
 def edit_date_event(request, event_id):
     event_to_edit = get_object_or_404(Event, pk=event_id)
@@ -179,8 +195,6 @@ class ActivityView(LoginRequiredMixin, ListView):
 
     def post(self, request, *args, **kwargs):
         if len(request.POST['message']) < 2:
-            # print('error')
-            # messages.error(request, 'error')
             return JsonResponse({'error': 'Please enter your message at least 2 charactors'})
         else:
             if 'event_id' in self.kwargs:
@@ -206,9 +220,6 @@ class ActivityView(LoginRequiredMixin, ListView):
             messages = Message.objects.filter(event=latest)
         context = {
             'messages': messages,
-            # 'event': event,
-            # 'group': self.get_group(),
-            # 'user': self.request.user,
         }
         html = render_to_string('partial/chat.html', context, request=request)
         return JsonResponse({'html': html})
@@ -229,7 +240,6 @@ def comment(request, message_id):
         }
         html = render_to_string('partial/chat.html', context, request=request)
         return JsonResponse({'html': html})
-        # return redirect('activity', this_message.event.group.id)
 
 def request_group(request, pk):
     group = get_object_or_404(Group, pk=pk)
@@ -271,8 +281,6 @@ def reject_request(request, pk):
     return redirect('request_confirm')
 
 def invite_group(request, pk):
-    # invited_before = Invitation.objects.filter(group=group).filter(invited_who=invited_user)
-    # if request.method == 'POST' and invited_before.count() == 0:
     if request.method == 'POST' and request.POST['user'] != '':
         group = get_object_or_404(Group, pk=pk)
         invited_user = get_object_or_404(User, pk=request.POST['user'])

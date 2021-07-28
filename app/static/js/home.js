@@ -21,4 +21,21 @@ $(document).ready(function(){
             dataType: 'json',
         })
     })
+    $('body').on('click', '.delete_btn', function(e){
+        e.preventDefault();
+        var eventId = $(this).attr('event');
+        var deleteRow = $(this).parentsUntil('tbody');
+        var deleteBtn = $(this);
+        $.ajax({
+            url: 'delete/event/'+eventId,
+            type: 'get',
+            dataType: 'json',
+            success: function(res){
+                if(res.delete){
+                    deleteBtn.siblings().click();
+                    deleteRow.hide();
+                }
+            }
+        })
+    })
 })
